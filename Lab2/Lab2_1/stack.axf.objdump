@@ -1,0 +1,40 @@
+
+C:/Users/murat/Desktop/Lab2/stack.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text
+			.global _start
+
+_start:
+			MOV R0, #4 //1 is to be pushed, in R0
+   0:	e3a00004 	mov	r0, #4
+
+00000004 <PUSHST>:
+
+PUSHST:		STR R0, [SP, #-4]! //pushes 1 onto the stack
+   4:	e52d0004 	push	{r0}		; (str r0, [sp, #-4]!)
+			ADD R0, R0, #1 //adds 1 to R0
+   8:	e2800001 	add	r0, r0, #1
+			STR R0, [SP, #-4]! //PUSHES 2 ONTO STACK
+   c:	e52d0004 	push	{r0}		; (str r0, [sp, #-4]!)
+			ADD R0, R0, #1 //ADDS 1 TO R0
+  10:	e2800001 	add	r0, r0, #1
+			STR R0, [SP, #-4]! //PUSHES 3 ONTO STACK
+  14:	e52d0004 	push	{r0}		; (str r0, [sp, #-4]!)
+
+00000018 <POPST>:
+
+POPST:		LDR R0, [SP], #4 //POPS 3
+  18:	e49d0004 	pop	{r0}		; (ldr r0, [sp], #4)
+			LDR R1, [SP], #4 //POPS 2
+  1c:	e49d1004 	pop	{r1}		; (ldr r1, [sp], #4)
+			LDR R2, [SP], #4 //POPS 1
+  20:	e49d2004 	pop	{r2}		; (ldr r2, [sp], #4)
+
+00000024 <END>:
+
+END:		B END
+  24:	eafffffe 	b	24 <END>

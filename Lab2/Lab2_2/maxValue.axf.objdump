@@ -1,0 +1,83 @@
+
+C:/Users/murat/Desktop/Lab2_2/maxValue.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text
+			.global _start
+
+_start:
+			LDR R0, =ARRAY //R0 points to array
+   0:	e59f0074 	ldr	r0, [pc, #116]	; 7c <RESULT+0x4>
+			LDR R1, N //r1 contains the number of elements
+   4:	e59f1068 	ldr	r1, [pc, #104]	; 74 <N>
+			PUSH {R0, R1, LR} //push parameters and LR
+   8:	e92d4003 	push	{r0, r1, lr}
+			BL LOOPSTART //call subroutine
+   c:	eb000004 	bl	24 <LOOPSTART>
+			LDR R0, [SP, #4] //get return value from stack
+  10:	e59d0004 	ldr	r0, [sp, #4]
+			STR R0, RESULT //store in memory
+  14:	e58f005c 	str	r0, [pc, #92]	; 78 <RESULT>
+			LDR LR, [SP, #8] //restore LR
+  18:	e59de008 	ldr	lr, [sp, #8]
+			ADD SP, SP, #12 //remove params from stack
+  1c:	e28dd00c 	add	sp, sp, #12
+
+00000020 <END>:
+
+END:		B END //infinite loooop!
+  20:	eafffffe 	b	20 <END>
+
+00000024 <LOOPSTART>:
+
+LOOPSTART:	PUSH {R0-R3} //callee-save registers loopstart will use
+  24:	e92d000f 	push	{r0, r1, r2, r3}
+			LDR R1, [SP, #20] //load param n from stack
+  28:	e59d1014 	ldr	r1, [sp, #20]
+			LDR R2, [SP, #16] //load param array from stack
+  2c:	e59d2010 	ldr	r2, [sp, #16]
+			MOV R0, #0 //clear R0 (max)
+  30:	e3a00000 	mov	r0, #0
+
+00000034 <LOOP>:
+
+LOOP:		LDR R3, [R2], #4 //get next value from array
+  34:	e4923004 	ldr	r3, [r2], #4
+			CMP R3, R0 //R3-R0
+  38:	e1530000 	cmp	r3, r0
+			BLT NEXTEL //if R3<R0, branch to nextel 
+  3c:	ba000000 	blt	44 <NEXTEL>
+			MOV R0, R3 //update current max
+  40:	e1a00003 	mov	r0, r3
+
+00000044 <NEXTEL>:
+
+NEXTEL:		SUBS R1, R1, #1 //decrement loop counter
+  44:	e2511001 	subs	r1, r1, #1
+			BGT LOOP //loop back if R1>0
+  48:	cafffff9 	bgt	34 <LOOP>
+			STR R0, [SP, #20] //store max on stack, replacing N
+  4c:	e58d0014 	str	r0, [sp, #20]
+			POP {R0-R3} //restore registers
+  50:	e8bd000f 	pop	{r0, r1, r2, r3}
+			BX LR //branch back where we started			
+  54:	e12fff1e 	bx	lr
+
+00000058 <ARRAY>:
+  58:	00000004 	.word	0x00000004
+  5c:	00000005 	.word	0x00000005
+  60:	00000003 	.word	0x00000003
+  64:	00000006 	.word	0x00000006
+  68:	00000001 	.word	0x00000001
+  6c:	00000008 	.word	0x00000008
+  70:	00000002 	.word	0x00000002
+
+00000074 <N>:
+  74:	00000007 	.word	0x00000007
+
+00000078 <RESULT>:
+  78:	00000000 	.word	0x00000000
+  7c:	00000058 	.word	0x00000058
